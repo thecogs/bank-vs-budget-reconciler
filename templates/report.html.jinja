@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Reconciliation report — {{ generated_at }}</title>
+<style>
+  :root {
+    --bg: #f7f6f2; --surface: #ffffff; --ink: #1c1e22; --ink-soft: #5b5c60;
+    --border: #e1ddd2; --ok: #2f7a4f; --warn: #a86a1f; --err: #b3402f; --info: #6b6f76;
+    --accent: #1f5c73;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink);
+    font-family: -apple-system, "Segoe UI", Helvetica, Arial, sans-serif; }
+  .wrap { max-width: 980px; margin: 0 auto; padding: 2.5rem 1.5rem 4rem; }
+  h1 { font-size: 1.6rem; margin-bottom: 0.2rem; }
+  .sub { color: var(--ink-soft); font-size: 0.92rem; margin-bottom: 2rem; }
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 0.8rem; margin-bottom: 2.2rem; }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+    padding: 0.9rem 1rem; }
+  .card .n { font-size: 1.5rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .card .l { font-size: 0.78rem; color: var(--ink-soft); text-transform: uppercase; letter-spacing: 0.03em; }
+  .card.err .n { color: var(--err); } .card.warn .n { color: var(--warn); }
+  .card.info .n { color: var(--info); } .card.ok .n { color: var(--ok); }
+  h2 { font-size: 1.1rem; margin: 2.4rem 0 0.8rem; padding-bottom: 0.4rem;
+    border-bottom: 1px solid var(--border); }
+  table { width: 100%; border-collapse: collapse; background: var(--surface);
+    border: 1px solid var(--border); border-radius: 10px; overflow: hidden; font-size: 0.88rem; }
+  th { text-align: left; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.04em;
+    color: var(--ink-soft); padding: 0.6rem 0.8rem; border-bottom: 1px solid var(--border); }
+  td { padding: 0.65rem 0.8rem; border-bottom: 1px solid var(--border); vertical-align: top; }
+  tr:last-child td { border-bottom: none; }
+  .amt { font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .neg { color: var(--err); } .pos { color: var(--ok); }
+  .badge { display: inline-block; font-size: 0.7rem; font-weight: 600; padding: 0.15rem 0.5rem;
+    border-radius: 999px; text-transform: uppercase; letter-spacing: 0.02em; }
+  .badge.error { background: #f8e3de; color: var(--err); }
+  .badge.warning { background: #f6e9d3; color: var(--warn); }
+  .badge.info { background: #e8e8e8; color: var(--info); }
+  .badge.ok { background: #dcefe1; color: var(--ok); }
+  .expl { color: var(--ink-soft); font-size: 0.85rem; margin-top: 0.25rem; }
+  details { background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+    padding: 0.2rem 1rem; margin-top: 2.4rem; }
+  summary { cursor: pointer; padding: 0.8rem 0; font-weight: 600; }
+  .empty { color: var(--ink-soft); font-style: italic; padding: 1rem; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Reconciliation report</h1>
+  <div class="sub">{{ ledger_path }} vs. {{ bank_path }} &middot; generated {{ generated_at }}</div>
+
+  <div class="cards">
+    <div class="card ok"><div class="n">{{ counts.matched }}</div><div class="l">Matched</div></div>
+    <div class="card err"><div class="n">{{ counts.error }}</div><div class="l">Needs action</div></div>
+    <div class="card warn"><div class="n">{{ counts.warning }}</div><div class="l">Worth a look</div></div>
+    <div class="card info"><div class="n">{{ counts.info }}</div><div class="l">Immaterial</div></div>
+  </div>
+
+  <h2>Flagged ({{ flagged|length }})</h2>
+  {% if flagged %}
+  <table>
+    <thead><tr><th>Date</th><th>Flag</th><th>Description</th><th>Amount</th><th>Why</th></tr></thead>
+    <tbody>
+      {% for r in flagged %}
+      <tr>
+        <td>{{ r.date_str }}</td>
+        <td><span class="badge {{ r.severity }}">{{ r.flag.replace('_', ' ') }}</span></td>
+        <td>{{ r.description }}</td>
+        <td class="amt {{ 'neg' if r.amount < 0 else 'pos' }}">{{ '%.2f'|format(r.amount) }}</td>
+        <td>{{ r.explanation or r.detail }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <div class="empty">Nothing flagged — every transaction matched cleanly.</div>
+  {% endif %}
+
+  <details>
+    <summary>Matched transactions ({{ matched|length }})</summary>
+    <table>
+      <thead><tr><th>Date</th><th>Ledger</th><th>Bank</th><th>Amount</th><th>Note</th></tr></thead>
+      <tbody>
+        {% for r in matched %}
+        <tr>
+          <td>{{ r.date_str }}</td>
+          <td>{{ r.ledger_entry.description }}</td>
+          <td>{{ r.bank_transaction.description }}</td>
+          <td class="amt {{ 'neg' if r.amount < 0 else 'pos' }}">{{ '%.2f'|format(r.amount) }}</td>
+          <td class="expl">{{ r.detail }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </details>
+</div>
+</body>
+</html>

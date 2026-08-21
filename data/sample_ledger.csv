@@ -1,0 +1,22 @@
+ledger_id,date,description,amount,category
+L01,2026-07-01,Adobe Creative Cloud,-54.99,Software
+L02,2026-07-01,Studio rent - July,-1200.00,Rent
+L03,2026-07-02,Whitfield Co retainer,2500.00,Income
+L04,2026-07-03,Coffee - client meeting (Roast & Brew),-6.75,Meals
+L05,2026-07-03,Notion subscription,-10.00,Software
+L06,2026-07-04,Zoom subscription,-15.99,Software
+L07,2026-07-07,Contractor payment - M. Alvarez,-800.00,Contractors
+L08,2026-07-08,Office supplies - Staples,-84.00,Supplies
+L09,2026-07-09,Client payment - Berkline Realty,1800.00,Income
+L10,2026-07-10,Internet - Comcast Business,-129.00,Utilities
+L11,2026-07-11,Google Workspace,-18.00,Software
+L12,2026-07-12,Client lunch - Marlowe Group,-64.50,Meals
+L13,2026-07-15,Client payment - Hearth & Home,3200.00,Income
+L14,2026-07-16,Contractor payment - J. Park,-650.00,Contractors
+L15,2026-07-17,Domain renewal - Namecheap,-42.00,Software
+L16,2026-07-18,Printer ink,-37.85,Supplies
+L17,2026-07-19,Client payment - Solace Yoga,950.00,Income
+L18,2026-07-22,Insurance - business liability,-87.40,Insurance
+L19,2026-07-24,Contractor payment - R. Singh,-900.00,Contractors
+L20,2026-07-26,Adobe stock images,-29.99,Software
+L21,2026-07-29,Client payment - Ferris Auto,1400.00,Income
