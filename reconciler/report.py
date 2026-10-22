@@ -6,7 +6,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import List
 
-from jinja2 import Environment, FileSystemLoader, select_autoescape
+from jinja2 import Environment, FileSystemLoader
 
 from reconciler.models import ReconciliationResult
 
@@ -21,7 +21,9 @@ def write_html_report(
 ) -> None:
     env = Environment(
         loader=FileSystemLoader(str(TEMPLATES_DIR)),
-        autoescape=select_autoescape(["html"]),
+        # Always escape: select_autoescape(["html"]) doesn't match the
+        # ".html.jinja" filename, so bank memo text went in as raw HTML.
+        autoescape=True,
     )
     template = env.get_template("report.html.jinja")
 
